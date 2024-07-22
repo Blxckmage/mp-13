@@ -60,7 +60,8 @@ const Navbar = () => {
                   color: 'black',
                   '&:hover': {
                     backgroundColor: "white",
-                    border: 'none'
+                    border: 'none',
+                    color: 'rgb(238 46 36)'
                   }
                 }}
                 >
@@ -72,14 +73,16 @@ const Navbar = () => {
                 sx={{
                   border: 'none',
                   color: 'black',
+                  borderRadius: '999px',
+                  transition: 'background-color 0.3s, color 0.3s',
                   '&:hover': {
                     backgroundColor: "rgb(238 46 36)",
                     color: 'white',
-                    border: 'none',
+                    border: 'none', 
                     borderRadius: '999px'
                   }
                 }}
-              >
+                >
                 Register
               </Button>
             </Stack>
