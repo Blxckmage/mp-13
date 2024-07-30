@@ -47,24 +47,17 @@ export function DataTable<TData, TValue>({
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-6 flex-col sm:flex-row">
-        <div className="relative flex-1 max-w-md w-full mb-4 sm:mb-0">
-          <Input
-            placeholder="Filter by event name..."
-            value={
-              (table.getColumn('event_name')?.getFilterValue() as string) ?? ''
-            }
-            onChange={(event) =>
-              table.getColumn('event_name')?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm"
-          />
-        </div>
-        <Link href="/dashboard/events/add">
-          <Button size="sm" className="ml-4">
-            Add Event
-          </Button>
-        </Link>
+      <div className="flex items-center py-4">
+        <Input
+          placeholder="Filter by event name..."
+          value={
+            (table.getColumn('event_name')?.getFilterValue() as string) ?? ''
+          }
+          onChange={(event) =>
+            table.getColumn('event_name')?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm"
+        />
       </div>
       <div className="rounded-md border">
         <Table>
