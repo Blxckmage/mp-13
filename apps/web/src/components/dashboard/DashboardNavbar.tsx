@@ -1,6 +1,5 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose } from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
 import {
   SheetContent,
   SheetHeader,
@@ -8,9 +7,26 @@ import {
   SheetTrigger,
 } from '@/components/ui/sheet';
 import { getSession } from '@/utils/actions/authentication';
-import { Banknote, Folder, HomeIcon, Menu, User, Users } from 'lucide-react';
+import {
+  Banknote,
+  Folder,
+  HomeIcon,
+  Menu,
+  UserIcon,
+  LogOut,
+  Ticket,
+} from 'lucide-react';
 import Link from 'next/link';
 import { ReactNode } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuItem,
+} from '@/components/ui/dropdown-menu';
+import { Avatar, AvatarFallback } from '../ui/avatar';
 
 export default async function DashboardNavbar({
   children,
@@ -54,39 +70,64 @@ export default async function DashboardNavbar({
                     </Link>
                   </DialogClose>
                   <DialogClose asChild>
-                    <Link href="/dashboard/attendees">
+                    <Link href="/dashboard/transactions">
                       <Button variant="outline" className="w-full">
-                        <Users className="mr-2 h-4 w-4" />
-                        Attendees
+                        <Banknote className="mr-2 h-4 w-4" />
+                        Transactions
                       </Button>
                     </Link>
                   </DialogClose>
                 </>
               ) : (
-                <DialogClose asChild>
-                  <Link href="/dashboard/transactions">
-                    <Button variant="outline" className="w-full">
-                      <Banknote className="mr-2 h-4 w-4" />
-                      Transactions
-                    </Button>
-                  </Link>
-                </DialogClose>
+                <>
+                  <DialogClose asChild>
+                    <Link href="/dashboard/tickets">
+                      <Button variant="outline" className="w-full">
+                        <Ticket className="mr-2 h-4 w-4" />
+                        Your tickets
+                      </Button>
+                    </Link>
+                  </DialogClose>
+                  <DialogClose asChild>
+                    <Link href="/dashboard/transactions">
+                      <Button variant="outline" className="w-full">
+                        <Banknote className="mr-2 h-4 w-4" />
+                        Your transactions
+                      </Button>
+                    </Link>
+                  </DialogClose>
+                </>
               )}
-
-              <Separator className="my-3" />
-              <DialogClose asChild>
-                <Link href="/dashboard/profile">
-                  <Button variant="outline" className="w-full">
-                    <User className="mr-2 h-4 w-4" />
-                    Profile
-                  </Button>
-                </Link>
-              </DialogClose>
             </div>
           </SheetContent>
         </Dialog>
         <div className="flex justify-center items-center gap-2 ml-auto">
-          <p>Welcome, {session?.full_name}</p>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Avatar className="h-9 w-9 hover:cursor-pointer">
+                <AvatarFallback>
+                  {session?.full_name.split(' ').map((name) => name[0])}
+                </AvatarFallback>
+              </Avatar>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>{session?.full_name}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <Link href="/dashboard/profile">
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <UserIcon className="mr-2 h-4 w-4" />
+                  Profile
+                </DropdownMenuItem>
+              </Link>
+
+              <Link href="/api/auth/signout">
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Logout
+                </DropdownMenuItem>
+              </Link>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </header>
       {children}

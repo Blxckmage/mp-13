@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
 import prisma from "@/prisma";
-import { snap } from "@/midtrans";
 
 export class TransactionController {
 	async getTransactions(req: Request, res: Response) {

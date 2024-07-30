@@ -21,7 +21,7 @@ model User {
   referrals    Referral[]    @relation("ReferralUser")
   transactions Transaction[]
   points       Points[]      @relation("UserPoints")
-  Ticket       Ticket[]
+  ticket       Ticket[]
 }
 
 model Referral {

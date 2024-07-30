@@ -38,6 +38,13 @@ export class UserController {
 
 			const user = await prisma.user.findUnique({
 				where: { user_id: Number(user_id) },
+				include: {
+					transactions: true,
+					referrals: true,
+					points: true,
+					ticket: true,
+					events: true,
+				},
 			});
 
 			if (!user) {
