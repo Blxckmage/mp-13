@@ -1,5 +1,6 @@
 'use client';
 
+import CreatePromoForm from '@/components/dashboard/promo/CreatePromoForm';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -83,6 +84,13 @@ export const columns: ColumnDef<Event>[] = [
                   </Button>
                 </DropdownMenuItem>
               </Link>
+
+              <DropdownMenuItem
+                className="hover:cursor-pointer"
+                onSelect={(e) => e.preventDefault()}
+              >
+                <CreatePromoForm event_id={row.original.event_id as number} />
+              </DropdownMenuItem>
 
               <DropdownMenuItem className="hover:cursor-pointer">
                 <Button

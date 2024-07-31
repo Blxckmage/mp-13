@@ -14,6 +14,7 @@ import { ReferralRouter } from "./routers/referral.router";
 import { PointsRouter } from "./routers/points.router";
 import { EventRouter } from "./routers/event.router";
 import { TransactionRouter } from "./routers/transaction.router";
+import { PromotionRouter } from "./routers/promotion.router";
 
 export default class App {
 	private app: Express;
@@ -60,6 +61,7 @@ export default class App {
 		const pointRouter = new PointsRouter();
 		const eventRouter = new EventRouter();
 		const transactionRouter = new TransactionRouter();
+		const promotionRouter = new PromotionRouter();
 
 		this.app.get("/api", (req: Request, res: Response) => {
 			res.send(`Hello, Purwadhika Student API!`);
@@ -70,6 +72,7 @@ export default class App {
 		this.app.use("/api/points", pointRouter.getRouter());
 		this.app.use("/api/events", eventRouter.getRouter());
 		this.app.use("/api/transactions", transactionRouter.getRouter());
+		this.app.use("/api/promotions", promotionRouter.getRouter());
 	}
 
 	public start(): void {

@@ -106,6 +106,7 @@ model Rating {
 model Promotion {
   promotion_id        Int      @id @default(autoincrement())
   event_id            Int
+  promotion_name      String
   discount_percentage Float
   valid_from          DateTime
   valid_until         DateTime

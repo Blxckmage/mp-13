@@ -731,7 +731,7 @@ const DateTimePicker = React.forwardRef<DateTimePickerRef, DateTimePickerProps>(
     };
 
     return (
-      <Popover>
+      <Popover modal={true}>
         <PopoverTrigger asChild disabled={disabled}>
           <Button
             variant="outline"
