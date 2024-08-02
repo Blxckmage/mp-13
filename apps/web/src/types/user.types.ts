@@ -11,7 +11,6 @@ export const userSchema = z.object({
 	created_at: z.string().nullable().optional(),
 	updated_at: z.string().nullable().optional(),
 	id: z.string().nullable().optional(),
-	transactions: transactionSchema.array().nullable().optional(),
 	referrals: z
 		.array(
 			z.object({
