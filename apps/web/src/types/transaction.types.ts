@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { userSchema } from "./user.types";
 
 export const transactionSchema = z.object({
 	transaction_id: z.number().nullable().optional(),
@@ -11,6 +12,7 @@ export const transactionSchema = z.object({
 	transaction_status: z.string().nullable().optional(),
 	created_at: z.string().nullable().optional(),
 	updated_at: z.string().nullable().optional(),
+	user: userSchema,
 });
 
 export type Transaction = z.infer<typeof transactionSchema>;
