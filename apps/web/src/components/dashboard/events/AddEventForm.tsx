@@ -22,6 +22,7 @@ import {
 import { createEvent } from '@/utils/actions/events';
 import { DateTimePicker } from '@/components/ui/datetime-picker';
 import { useEffect } from 'react';
+import { toast } from 'sonner';
 
 const category = {
   festivals: 'Festivals',
@@ -49,16 +50,26 @@ export default function AddEventForm({ user_id }: { user_id: number }) {
     },
   });
 
-  console.log(form.formState.errors);
-
   const { control, handleSubmit, register, watch, setValue } = form;
 
   useEffect(() => {
     setValue('available_seats', form.watch('total_seats'));
   }, [form.watch('total_seats'), setValue]);
 
-  const onSubmit = (data: Event) => {
-    createEvent(JSON.parse(JSON.stringify(data)));
+  const onSubmit = async (data: Event) => {
+    try {
+      const response = createEvent(JSON.parse(JSON.stringify(data)));
+
+      toast.promise(response, {
+        loading: 'Creating event...',
+        success: 'Event created successfully',
+        error: 'Failed to create event',
+      });
+
+      await response;
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (

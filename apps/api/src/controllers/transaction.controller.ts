@@ -27,6 +27,7 @@ export class TransactionController {
 					},
 					include: {
 						user: true,
+						event: true,
 					},
 				});
 

@@ -11,6 +11,20 @@ export class EventController {
 		}
 	}
 
+	async getOrganizerEvents(req: Request, res: Response) {
+		try {
+			const { organizer_id } = req.params;
+
+			const events = await prisma.event.findMany({
+				where: { created_by: Number(organizer_id) },
+			});
+
+			return res.status(200).send(events);
+		} catch (error) {
+			return res.status(500).send({ error: "Failed to fetch events" });
+		}
+	}
+
 	async getEventById(req: Request, res: Response) {
 		try {
 			const { event_id } = req.params;
@@ -105,6 +119,21 @@ export class EventController {
 		}
 	}
 
+	async getTicketByUserId(req: Request, res: Response) {
+		try {
+			const { user_id } = req.params;
+
+			const tickets = await prisma.ticket.findMany({
+				where: { user_id: Number(user_id) },
+				include: { event: true },
+			});
+
+			return res.status(200).send(tickets);
+		} catch (error) {
+			return res.status(500).send({ error: "Failed to fetch tickets" });
+		}
+	}
+
 	async getTicketByUserAndEventId(req: Request, res: Response) {
 		try {
 			const { user_id, event_id } = req.params;
@@ -139,7 +168,7 @@ export class EventController {
 
 	async createTicket(req: Request, res: Response) {
 		try {
-			const { user_id, event_id, price, quantity } = req.body;
+			const { user_id, event_id, price, quantity, promotion_id } = req.body;
 
 			const newTicket = await prisma.$transaction(async (prisma) => {
 				const ticket = await prisma.ticket.create({
@@ -154,6 +183,13 @@ export class EventController {
 				const event = await prisma.event.findFirst({
 					where: { event_id: Number(event_id) },
 				});
+
+				if (promotion_id) {
+					await prisma.promotion.update({
+						where: { promotion_id: Number(promotion_id) },
+						data: { max_uses: { decrement: 1 } },
+					});
+				}
 
 				if (!event) {
 					throw new Error("Event not found");
