@@ -16,10 +16,6 @@ type Attendees = z.infer<typeof attendeesTableSchema>;
 
 export const columns: ColumnDef<Attendees>[] = [
   {
-    accessorKey: 'event.event_name',
-    header: 'Event',
-  },
-  {
     accessorKey: 'user.full_name',
     header: 'Name',
   },

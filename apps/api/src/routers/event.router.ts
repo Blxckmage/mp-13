@@ -18,6 +18,11 @@ export class EventRouter {
 		);
 
 		this.router.get(
+			"/:organizer_id/events",
+			this.eventController.getOrganizerEvents.bind(this.eventController),
+		);
+
+		this.router.get(
 			"/:event_id",
 			this.eventController.getEventById.bind(this.eventController),
 		);
@@ -45,6 +50,11 @@ export class EventRouter {
 		this.router.get(
 			"/:event_id/tickets",
 			this.eventController.getTicketByEventId.bind(this.eventController),
+		);
+
+		this.router.get(
+			"/tickets/:user_id",
+			this.eventController.getTicketByUserId.bind(this.eventController),
 		);
 
 		this.router.get(

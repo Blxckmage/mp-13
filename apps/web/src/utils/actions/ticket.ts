@@ -3,11 +3,24 @@
 import { Ticket } from "@/types/ticket.types";
 
 export async function getTickets() {
-	const res = await fetch("http://localhost:8000/api/tickets", {
+	const res = await fetch("http://localhost:8000/api/events/tickets", {
 		cache: "no-cache",
 	});
 
-	if (!res.ok) throw new Error("Failed to fetch events");
+	if (!res.ok) throw new Error("Failed to fetch tickets");
+
+	return res.json();
+}
+
+export async function getTicketByUserId(user_id: number) {
+	const res = await fetch(
+		`http://localhost:8000/api/events/tickets/${user_id}`,
+		{
+			cache: "no-cache",
+		},
+	);
+
+	if (!res.ok) throw new Error("Failed to fetch tickets");
 
 	return res.json();
 }
@@ -23,7 +36,7 @@ export async function getTicketByUserAndEventId(
 		},
 	);
 
-	if (!res.ok) throw new Error("Failed to fetch event");
+	if (!res.ok) throw new Error("Failed to fetch tickets");
 
 	const data = await res.json();
 
@@ -42,7 +55,7 @@ export async function createTicket(data: Ticket) {
 			body: JSON.stringify(data),
 		});
 
-		if (!res.ok) throw new Error("Failed to create event");
+		if (!res.ok) throw new Error("Failed to create ticket");
 
 		return res.json();
 	} catch (error) {

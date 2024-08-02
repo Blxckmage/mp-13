@@ -11,7 +11,7 @@ import {
 import { Event } from '@/types/event.types';
 import { deleteEvent } from '@/utils/actions/events';
 import { ColumnDef } from '@tanstack/react-table';
-import { ChevronDownIcon, DeleteIcon, Users } from 'lucide-react';
+import { ChevronDownIcon, DeleteIcon, Users, TagIcon } from 'lucide-react';
 import Link from 'next/link';
 
 export const columns: ColumnDef<Event>[] = [
@@ -85,12 +85,23 @@ export const columns: ColumnDef<Event>[] = [
                 </DropdownMenuItem>
               </Link>
 
-              <DropdownMenuItem
-                className="hover:cursor-pointer"
-                onSelect={(e) => e.preventDefault()}
+              {/* <DropdownMenuItem */}
+              {/*   className="hover:cursor-pointer" */}
+              {/*   onSelect={(e) => e.preventDefault()} */}
+              {/* > */}
+              {/*   <CreatePromoForm event_id={row.original.event_id as number} /> */}
+              {/* </DropdownMenuItem> */}
+
+              <Link
+                href={`/dashboard/events/${row.original.event_id}/promotions`}
               >
-                <CreatePromoForm event_id={row.original.event_id as number} />
-              </DropdownMenuItem>
+                <DropdownMenuItem className="hover:cursor-pointer">
+                  <Button size="sm" variant="ghost">
+                    <TagIcon size={16} className="mr-2" />
+                    Manage Promotions
+                  </Button>
+                </DropdownMenuItem>
+              </Link>
 
               <DropdownMenuItem className="hover:cursor-pointer">
                 <Button

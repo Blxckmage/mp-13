@@ -15,30 +15,28 @@ import { User } from '@/types/user.types';
 import BookTicketForm from './BookTicketForm';
 import { getSession } from '@/utils/actions/authentication';
 import { getTicketByUserAndEventId } from '@/utils/actions/ticket';
+import { Promotion } from '@/types/promotion.types';
+import { getPromotionByEventId } from '@/utils/actions/promotion';
+import { getPointById } from '@/utils/actions/points';
 
 export default async function EventDetailView({
   event_id,
 }: {
   event_id: number;
 }) {
-  const event: Event = await getEventById(event_id);
-  const organizer: User = await getUserById(event.created_by);
   const user = await getSession();
+  const userPoints = await getPointById(user?.user_id as number);
+  const event: Event = await getEventById(event_id);
+  const eventPromotions: Promotion[] = await getPromotionByEventId(event_id);
+  const organizer: User = await getUserById(event.created_by);
   const userTicket = await getTicketByUserAndEventId(
     user?.user_id as number,
     event.event_id as number,
   );
 
   return (
-    <div className="flex flex-col min-h-[100dvh]">
-      <section className="relative w-full h-[50vh]">
-        <img
-          src="/poster1.jpg"
-          alt="Event Hero"
-          className="w-full h-full object-fit"
-        />
-      </section>
-      <div className="container px-4 md:px-6 py-12 md:py-24 lg:py-32">
+    <div className="flex flex-col min-h-[100vh]">
+      <div className="container px-4 md:px-6">
         <div className="space-y-6">
           <div className="space-y-2">
             <h1 className="text-3xl font-bold tracking-tighter sm:text-5xl xl:text-6xl/none">
@@ -128,7 +126,9 @@ export default async function EventDetailView({
                   <BookTicketForm
                     isUserTicket={userTicket ? true : false}
                     user_id={user?.user_id}
+                    userPoints={userPoints}
                     event={event}
+                    eventPromotions={eventPromotions}
                   />
                 )}
               </CardContent>

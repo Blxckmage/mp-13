@@ -18,9 +18,9 @@ export default function PayTicketButton({
 
       if (response) {
         toast.promise(response, {
-          loading: 'Canceling ticket...',
-          success: 'Ticket canceled successfully',
-          error: 'Failed to cancel ticket',
+          loading: 'Paying ticket...',
+          success: 'Ticket paid successfully',
+          error: 'Failed to pay ticket',
         });
       }
 

@@ -24,6 +24,7 @@ import { createPromotion } from '@/utils/actions/promotion';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DialogDescription } from '@radix-ui/react-dialog';
 import { Check, Percent } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 
@@ -36,6 +37,7 @@ export default function CreatePromoForm({ event_id }: { event_id: number }) {
   });
 
   const { control, handleSubmit } = form;
+  const router = useRouter();
 
   const onSubmit = async (data: Promotion) => {
     try {
@@ -50,6 +52,8 @@ export default function CreatePromoForm({ event_id }: { event_id: number }) {
       await response;
     } catch (error) {
       console.error(error);
+    } finally {
+      router.refresh();
     }
   };
 

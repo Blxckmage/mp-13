@@ -15,7 +15,7 @@ export class PointsController {
 		try {
 			const { referral_id } = req.params;
 
-			const points = await prisma.points.findFirst({
+			const points = await prisma.points.findMany({
 				where: { referral_id: Number(referral_id) },
 			});
 

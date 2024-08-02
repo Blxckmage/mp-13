@@ -17,35 +17,83 @@ import { Event } from '@/types/event.types';
 import { toast } from 'sonner';
 import { createTransaction } from '@/utils/actions/transaction';
 import { Transaction, transactionSchema } from '@/types/transaction.types';
+import { Promotion } from '@/types/promotion.types';
+import { useState } from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { z } from 'zod';
+import { Points } from '@/types/points.types';
+import { Switch } from '@/components/ui/switch';
 
 type BookTicketFormProps = {
   event: Event;
+  eventPromotions: Promotion[];
   isUserTicket?: boolean;
   user_id?: number | undefined | null;
+  userPoints?: Points[];
 };
+
+const transactionWithPromotionSchema = transactionSchema.extend({
+  promotion_id: z.string().optional(),
+});
+
+type TransactionWithPromotion = z.infer<typeof transactionWithPromotionSchema>;
 
 export default function BookTicketForm({
   event,
+  eventPromotions,
   isUserTicket,
   user_id,
+  userPoints,
 }: BookTicketFormProps) {
-  const form = useForm<Transaction>({
-    resolver: zodResolver(transactionSchema),
+  const [selectedPromotion, setSelectedPromotion] = useState<Promotion | null>(
+    null,
+  );
+  const [usePoints, setUsePoints] = useState(false);
+
+  const form = useForm<TransactionWithPromotion>({
+    resolver: zodResolver(transactionWithPromotionSchema),
     defaultValues: {
       user_id: user_id as number,
       event_id: event.event_id as number,
       total_amount: 0,
+      promotion_id: undefined,
     },
   });
 
-  const { control, handleSubmit } = form;
+  const { control, handleSubmit, watch } = form;
+  const quantity = watch('quantity') || 0;
 
-  const onSubmit = async (data: Transaction) => {
+  const calculateTotal = () => {
+    const baseAmount = event.ticket_price * quantity;
+    let total = baseAmount;
+    if (selectedPromotion) {
+      const discount =
+        (selectedPromotion.discount_percentage / 100) * baseAmount;
+      total -= discount;
+    }
+    if (usePoints && userPoints && userPoints.length > 0) {
+      const pointsValue = userPoints.reduce(
+        (acc, point) => acc + point.points,
+        0,
+      );
+      total -= pointsValue;
+    }
+    return total > 0 ? total : 0;
+  };
+
+  const onSubmit = async (data: Omit<Transaction, 'transaction_id'>) => {
     try {
-      const newData: Transaction = {
+      const newData = {
         ...data,
-        total_amount: event.ticket_price * data.quantity,
+        total_amount: calculateTotal(),
         event_name: event.event_name,
+        promotion_id: selectedPromotion?.promotion_id,
       };
       const response = createTransaction(JSON.parse(JSON.stringify(newData)));
 
@@ -66,7 +114,7 @@ export default function BookTicketForm({
 
   return (
     <Form {...form}>
-      <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-4 my-3" onSubmit={handleSubmit(onSubmit)}>
         <FormField
           control={control}
           name="quantity"
@@ -101,7 +149,63 @@ export default function BookTicketForm({
           )}
         />
 
+        <FormField
+          control={control}
+          name="promotion_id"
+          render={({ field }) => (
+            <div>
+              <FormLabel htmlFor="promotion">Select Promotion</FormLabel>
+              <FormControl>
+                <Select
+                  onValueChange={(value) => {
+                    const promotion = eventPromotions.find(
+                      (p) => p.promotion_id === Number(value),
+                    );
+                    setSelectedPromotion(promotion || null);
+                    field.onChange(value);
+                  }}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a promotion" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {eventPromotions.map((promotion) => (
+                      <SelectItem
+                        key={promotion.promotion_id}
+                        value={promotion.promotion_id?.toString() as string}
+                      >
+                        {promotion.promotion_name} -{' '}
+                        {promotion.discount_percentage}%
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </div>
+          )}
+        />
+
+        {userPoints && userPoints.length > 0 && (
+          <div className="flex items-center">
+            <Switch
+              id="usePoints"
+              checked={usePoints}
+              onCheckedChange={() => setUsePoints(!usePoints)}
+            />
+            <FormLabel htmlFor="usePoints" className="ml-2">
+              Redeem {userPoints?.reduce((acc, point) => acc + point.points, 0)}{' '}
+              points
+            </FormLabel>
+          </div>
+        )}
+
         <Separator />
+        <div className="text-right">
+          <p className="text-lg font-semibold">
+            Total Price: Rp. {calculateTotal().toLocaleString('id-ID')}
+          </p>
+        </div>
         {isUserTicket ? (
           <Button type="submit" className="w-full" disabled>
             Ticket already booked
