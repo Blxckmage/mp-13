@@ -47,7 +47,7 @@ const ReviewView = () => {
 
   const registerEvent = async ({ username, comment, rating }: IReviews) => {
     try {
-      const response = await fetch("http://localhost:3000/reviews", {
+      const response = await fetch("http://localhost:8000/api/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
